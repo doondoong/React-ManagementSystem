@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import './App.css';
-import Customer from './components/Customer';
+import React, { Component } from "react";
+import "./App.css";
+import Customer from "./components/Customer";
 import {
     Table,
     TableHead,
@@ -10,37 +10,38 @@ import {
     withStyles,
     Paper,
 } from "@material-ui/core";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import CircularStatic from "./components/MyProgress"
 
-const styles = theme => ({
-  root: {
-    width: '100%',
-    marginTop: theme.spacing.unit * 3,
-    overflowX: "auto"
-  },
-  table: {
-    minWidth: 1080
-  }
-})
-
-
+const styles = (theme) => ({
+    root: {
+        width: "100%",
+        marginTop: theme.spacing.unit * 3,
+        overflowX: "auto",
+    },
+    table: {
+        minWidth: 1080,
+    }
+});
 
 class App extends Component {
-
     state = {
-        customers: ""
+        customers: "",
+        completed: 0,
     };
 
     componentDidMount() {
+        this.timer = setInterval(this.progress, 20);
         this.callApi()
-            .then(res => this.setState({customers: res}))
-            .catch(err => console.log(err));
+            .then((res) => this.setState({ customers: res }))
+            .catch((err) => console.log(err));
     }
 
-    callApi = async() => {
-        const response = await fetch('/api/customers');
+    callApi = async () => {
+        const response = await fetch("/api/customers");
         const body = await response.json();
         return body;
-    }
+    };
 
     render() {
         const { classes } = this.props;
@@ -58,25 +59,34 @@ class App extends Component {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {this.state.customers ? this.state.customers.map((c) => {
-                            return (
-                                <Customer
-                                    id={c.id}
-                                    image={c.image}
-                                    name={c.name}
-                                    birthday={c.birthday}
-                                    gender={c.gender}
-                                    job={c.job}
-                                    key={c.id}
-                                />
-                            );
-                        }) : ""}
+                        {this.state.customers ? (
+                            this.state.customers.map((c) => {
+                                return (
+                                    <Customer
+                                        id={c.id}
+                                        image={c.image}
+                                        name={c.name}
+                                        birthday={c.birthday}
+                                        gender={c.gender}
+                                        job={c.job}
+                                        key={c.id}
+                                    />
+                                );
+                            })
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan="6" align="center">
+                                    <CircularProgress>
+                                        <CircularStatic />
+                                    </CircularProgress>
+                                </TableCell>
+                            </TableRow>
+                        )}
                     </TableBody>
                 </Table>
             </Paper>
         );
     }
 }
-
 
 export default withStyles(styles)(App);
