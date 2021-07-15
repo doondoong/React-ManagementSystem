@@ -6,9 +6,8 @@
         "client": "cd client && yarn start",
         "server": "node server.js",
         "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
-        "start": "node server.js"
     },
-    
+
     "dependencies": {
         "@material-ui/icons": "^4.11.2",
         "body-parser": "^1.19.0",
